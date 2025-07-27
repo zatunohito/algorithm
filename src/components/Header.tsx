@@ -17,8 +17,8 @@ export default function Header() {
           />
         </Link>
         <nav className="font-mono">
-          <Link href="/sorting" className="px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-300">
-            Sorting
+          <Link href="/application" className="px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-300">
+            アプリ
           </Link>
         </nav>
       </div>
