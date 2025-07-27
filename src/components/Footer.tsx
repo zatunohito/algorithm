@@ -10,7 +10,7 @@ export default function Footer() {
             </summary>
             <div className="pt-2 text-sm">
               <p>ご質問、ご意見などございましたら、下記メールアドレスまでお気軽にお問い合わせください。</p>
-              <p className="mt-1">Email: <a href="mailto:zatunohito@gmail.com" className="text-blue-400 hover:underline">info@algoriss.com</a></p>
+              <p className="mt-1">Email: <a href="mailto:zatunohito@gmail.com" className="text-blue-400 hover:underline">zatunohito@gmail.com</a></p>
             </div>
           </details>
           <details className="group">
@@ -19,7 +19,7 @@ export default function Footer() {
             </summary>
             <div className="pt-2 text-sm">
               <p>学校、塾、その他教育機関での団体導入をご検討の際は、下記までご連絡ください。</p>
-              <p className="mt-1">Email: <a href="mailto:sales@algoriss.com" className="text-blue-400 hover:underline">zatunohito@gmail.com</a></p>
+              <p className="mt-1">Email: <a href="mailto:zatunohito@gmail.com" className="text-blue-400 hover:underline">zatunohito@gmail.com</a></p>
               <p className="mt-1">担当者より詳細をご案内させていただきます。</p>
             </div>
           </details>
