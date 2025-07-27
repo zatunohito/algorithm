@@ -30,7 +30,7 @@ export default function RepetitionPage() {
             <pre className="bg-gray-900 p-4 rounded-md text-white font-mono text-sm overflow-x-auto">
               <code>
                 i を 1 から 5 まで 1 ずつ増やしながら繰り返す<br />
-                {'  '}出力: "こんにちは"<br />
+                {'  '}出力: &quot;テスト&quot;<br />
                 終わり
               </code>
             </pre>
