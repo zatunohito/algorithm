@@ -7,7 +7,7 @@ const applications = [
     description: 'アルゴリズムを考える基礎を学びます',
   },
   {
-    href: '/application/2',
+    href: '/application/base2',
     title: '基礎II',
     description: 'アルゴリズムを一人で考えられるようにします',
   },
