@@ -13,6 +13,7 @@ export default function Header() {
             width={180} // 元の画像のアスペクト比に合わせて調整してください
             height={40} // 元の画像のアスペクト比に合わせて調整してください
             priority
+            className="invert"
           />
         </Link>
         <nav className="font-mono">
