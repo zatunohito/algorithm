@@ -12,6 +12,11 @@ const applications = [
     description: 'アルゴリズムを一人で考えられるようにします',
   },
   {
+    href: '/application/base3',
+    title: 'まとめ問題',
+    description: '基礎IとIIの内容を総復習します',
+  },
+  {
     href: '/application/apply1',
     title: '応用I',
     description: 'アルゴリズムを応用して問題を解決します',
