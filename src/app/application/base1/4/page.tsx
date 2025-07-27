@@ -47,7 +47,7 @@ export default function RepetitionPage() {
               <code>
                 変数 count = 0<br />
                 count {'<'} 3 の間、繰り返す<br />
-                {'  '}出力: "ループ中"<br />
+                {'  '}出力: &quot;ループ中&quot;<br />
                 {'  '}count = count + 1<br />
                 終わり
               </code>

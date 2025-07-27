@@ -26,9 +26,9 @@ function DocumentationModal({ onClose }: { onClose: () => void }) {
               <code>
                 関数 bubbleSort(data)<br />
                 {'  '}変数 n = dataの要素数<br />
-                {'  '}// パス（走査）の繰り返し<br />
+                {'  '} {/*パス（走査）の繰り返し*/}<br />
                 {'  '}i を 0 から n - 2 まで 1 ずつ増やしながら繰り返す<br />
-                {'    '}// 隣り合う要素の比較と交換<br />
+                {'    '} {/* 隣り合う要素の比較と交換 */}<br />
                 {'    '}j を 0 から n - i - 2 まで 1 ずつ増やしながら繰り返す<br />
                 {'      '}もし data[j] が data[j+1] より大きい ならば<br />
                 {'        '}data[j] と data[j+1] を交換する<br />
