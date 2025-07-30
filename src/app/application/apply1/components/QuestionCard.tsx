@@ -18,40 +18,11 @@ export interface QuestionCardProps {
 // --- ユーティリティ関数追加 ---
 /**
  * コードブロック内で「数字+空白」の前で改行を挿入する
- * ただし、行頭の数字が1から1ずつ増加していない場合は改行を挿入しない
- * 1から連番で増えている場合のみ、その数字の前で改行する
+ * 例: "1 // ... 2 // ..." → "\n1 // ...\n2 // ..."
  */
 function formatCodeWithLineBreaks(text: string): string {
-  const regex = /(\d+) /g;
-  let result = '';
-  let lastIndex = 0;
-  let expectedNum = 1;
-  let match: RegExpExecArray | null;
-  let first = true;
-
-  while ((match = regex.exec(text)) !== null) {
-    const num = parseInt(match[1], 10);
-    if (num === expectedNum) {
-      // 数字の直前で改行（1行目以外のみ）
-      if (!first) {
-        result += text.slice(lastIndex, match.index) + '\n';
-      } else {
-        result += text.slice(lastIndex, match.index);
-      }
-      result += match[1] + ' ';
-      lastIndex = regex.lastIndex;
-      expectedNum++;
-      first = false;
-    } else {
-      // 連番でなければそのまま
-      result += text.slice(lastIndex, regex.lastIndex);
-      lastIndex = regex.lastIndex;
-      expectedNum = num + 1;
-      first = false;
-    }
-  }
-  result += text.slice(lastIndex);
-  return result;
+  // 先頭以外の「数字+空白」の直前に改行を挿入
+  return text.replace(/ (?=\d+ )/g, '\n');
 }
 
 // --- questionText内の<code>要素を整形するラッパー ---
@@ -59,8 +30,9 @@ function FormatCodeInQuestionText({ children }: { children: React.ReactNode }) {
   // childrenを再帰的に走査して<code>要素を検出し、内容を整形
   function renderWithFormat(node: React.ReactNode): React.ReactNode {
     if (React.isValidElement(node)) {
-      if (node.type === 'code' && typeof node.props.children === 'string') {
-        const formatted = formatCodeWithLineBreaks(node.props.children);
+      const props = node.props as { children?: React.ReactNode };
+      if (node.type === 'code' && typeof props.children === 'string') {
+        const formatted = formatCodeWithLineBreaks(props.children);
         return React.cloneElement(
           node,
           {},
@@ -68,11 +40,11 @@ function FormatCodeInQuestionText({ children }: { children: React.ReactNode }) {
         );
       }
       // 子要素が配列の場合も再帰
-      if (node.props && node.props.children) {
+      if (props && props.children) {
         return React.cloneElement(
           node,
           {},
-          React.Children.map(node.props.children, renderWithFormat)
+          React.Children.map(props.children, renderWithFormat)
         );
       }
     }

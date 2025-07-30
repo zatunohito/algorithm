@@ -5,7 +5,7 @@ import { QuestionCard } from '../components/QuestionCard';
 import { QuestionCardProps } from '../components/QuestionCard';
 
 // 第1問 配列と探索アルゴリズム (25点)
-export const question1_1: QuestionCardProps = {
+const question1_1: QuestionCardProps = {
   problemNumber: 1,
   questionText: (
     <>
@@ -56,7 +56,7 @@ function find_max_score(scores, n) {
   ),
 };
 
-export const question1_2: QuestionCardProps = {
+const question1_2: QuestionCardProps = {
   problemNumber: 2,
   questionText: (
     <>
@@ -99,7 +99,7 @@ export const question1_2: QuestionCardProps = {
   ),
 };
 
-export const question1_3: QuestionCardProps = {
+const question1_3: QuestionCardProps = {
   problemNumber: 3,
   questionText: (
     <>
@@ -131,7 +131,7 @@ export const question1_3: QuestionCardProps = {
 };
 
 // 第2問 アルゴリズムの応用 (25点)
-export const question2_1: QuestionCardProps = {
+const question2_1: QuestionCardProps = {
   problemNumber: 1,
   questionText: (
     <>
@@ -164,7 +164,7 @@ export const question2_1: QuestionCardProps = {
   ),
 };
 
-export const question2_2: QuestionCardProps = {
+const question2_2: QuestionCardProps = {
   problemNumber: 2,
   questionText: (
     <>
