@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import PostAssessmentModal from '@/components/PostAssessmentModal'
-import { MutatingDots } from 'react-loader-spinner'
+import MutatingDots from '@/components/MutatingDots'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -76,15 +76,7 @@ export default function ApplicationPage() {
 
   if (loading || assessmentLoading || assessmentCompleted === null) return (
     <div className="flex justify-center items-center py-16">
-      <MutatingDots
-        visible={true}
-        height="100"
-        width="100"
-        color="#3B82F6"
-        secondaryColor="#1E40AF"
-        radius="12.5"
-        ariaLabel="mutating-dots-loading"
-      />
+      <MutatingDots />
     </div>
   )
   if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
