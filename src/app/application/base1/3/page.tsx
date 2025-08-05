@@ -1,7 +1,14 @@
-/* eslint-disable */
+'use client'
+
 import Link from 'next/link';
+import { useUserProgress } from '@/hooks/useUserProgress'
 
 export default function ConditionalBranchingPage() {
+  const { user, isCompleted, loading, error, handleComplete } = useUserProgress('/application/base1/3')
+
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
+
   return (
     <div className="py-8 sm:py-12">
       <div className="max-w-4xl mx-auto">
@@ -32,7 +39,7 @@ export default function ConditionalBranchingPage() {
               <code>
                 変数 age = 20<br />
                 もし age が 18 以上 ならば<br />
-                {'  '}出力: "成人です"<br />
+                {'  '}出力: &quot;成人です&quot;<br />
                 終わり
               </code>
             </pre>
@@ -49,9 +56,9 @@ export default function ConditionalBranchingPage() {
               <code>
                 変数 score = 75<br />
                 もし score が 80 以上 ならば<br />
-                {'  '}出力: "合格"<br />
+                {'  '}出力: &quot;合格&quot;<br />
                 そうでなければ<br />
-                {'  '}出力: "不合格"<br />
+                {'  '}出力: &quot;不合格&quot;<br />
                 終わり
               </code>
             </pre>
@@ -68,11 +75,11 @@ export default function ConditionalBranchingPage() {
               <code>
                 変数 time = 14<br />
                 もし time が 12 より小さい ならば<br />
-                {'  '}出力: "午前"<br />
+                {'  '}出力: &quot;午前&quot;<br />
                 そうでなく、もし time が 18 より小さい ならば<br />
-                {'  '}出力: "午後"<br />
+                {'  '}出力: &quot;午後&quot;<br />
                 そうでなければ<br />
-                {'  '}出力: "夜"<br />
+                {'  '}出力: &quot;夜&quot;<br />
                 終わり
               </code>
             </pre>
@@ -109,9 +116,9 @@ export default function ConditionalBranchingPage() {
               <code>
                 変数 temperature = 28<br />
                 もし temperature {'>='} 30 ならば<br />
-                {'  '}出力: "エアコンをつける"<br />
+                {'  '}出力: &quot;エアコンをつける&quot;<br />
                 そうでなければ<br />
-                {'  '}出力: "窓を開ける"<br />
+                {'  '}出力: &quot;窓を開ける&quot;<br />
                 終わり
               </code>
             </pre>
@@ -125,11 +132,24 @@ export default function ConditionalBranchingPage() {
           </div>
         </div>
 
-        {/* Navigation to next lesson */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center space-y-4">
+          {user && (
+            <button
+              onClick={handleComplete}
+              className={`px-8 py-3 font-semibold rounded-lg transition-colors ${
+                isCompleted 
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+              }`}
+            >
+              {isCompleted ? '✓ 完了済み（クリックで解除）' : 'レッスンを完了する'}
+            </button>
+          )}
+          <div>
             <Link href="/application/base1/4" className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-0.5">
                 次のレッスンへ：繰り返し &rarr;
             </Link>
+          </div>
         </div>
       </div>
     </div>
