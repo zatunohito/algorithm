@@ -23,16 +23,7 @@ export default function Apply1Page() {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
       
-      if (user) {
-        const { data } = await supabase
-          .from('user_progress')
-          .select('lesson_path')
-          .eq('user_id', user.id)
-        
-        if (data) {
-          setCompletedLessons(data.map(item => item.lesson_path))
-        }
-      }
+
     }
     getUser()
   }, [])

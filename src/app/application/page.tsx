@@ -1,13 +1,7 @@
 'use client'
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { useAllUserProgress } from '@/hooks/useUserProgress'
 
 const applications = [
   {
@@ -38,31 +32,10 @@ const applications = [
 ];
 
 export default function ApplicationPage() {
-  const [completedLessons, setCompletedLessons] = useState<string[]>([])
-  const [user, setUser] = useState<{ id: string } | null>(null)
+  const { isCompleted, loading, error } = useAllUserProgress()
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      
-      if (user) {
-        const { data } = await supabase
-          .from('user_progress')
-          .select('lesson_path')
-          .eq('user_id', user.id)
-        
-        if (data) {
-          setCompletedLessons(data.map(item => item.lesson_path))
-        }
-      }
-    }
-    getUser()
-  }, [])
-
-  const isCompleted = (lessonPath: string) => {
-    return completedLessons.includes(lessonPath)
-  }
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
 
   return (
     <div className="py-8 sm:py-12">

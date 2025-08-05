@@ -3,12 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { supabase } from '@/lib/supabase'
 
 export default function Header() {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
@@ -53,9 +48,13 @@ export default function Header() {
 
   const handleCopyUserId = async () => {
     if (user?.id) {
-      await navigator.clipboard.writeText(user.id)
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
+      try {
+        await navigator.clipboard.writeText(user.id)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+      } catch (error) {
+        console.error('コピーに失敗しました:', error)
+      }
     }
   }
 
