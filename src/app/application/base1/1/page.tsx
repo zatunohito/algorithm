@@ -1,6 +1,14 @@
+'use client'
+
 import Link from 'next/link';
+import { useUserProgress } from '@/hooks/useUserProgress'
 
 export default function StartEndPage() {
+  const { user, isCompleted, loading, error, handleComplete } = useUserProgress('/application/base1/1')
+
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
+
   return (
     <div className="py-8 sm:py-12">
       <div className="max-w-4xl mx-auto">
@@ -69,11 +77,25 @@ export default function StartEndPage() {
           </p>
         </div>
 
-        {/* Navigation to next lesson */}
-        <div className="mt-12 text-center">
+        {/* Complete button */}
+        <div className="mt-12 text-center space-y-4">
+          {user && (
+            <button
+              onClick={handleComplete}
+              className={`px-8 py-3 font-semibold rounded-lg transition-colors ${
+                isCompleted 
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+              }`}
+            >
+              {isCompleted ? '✓ 完了済み（クリックで解除）' : 'レッスンを完了する'}
+            </button>
+          )}
+          <div>
             <Link href="/application/base1/2" className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-0.5">
                 次のレッスンへ：変数と定数 &rarr;
             </Link>
+          </div>
         </div>
       </div>
     </div>

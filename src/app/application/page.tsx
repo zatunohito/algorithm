@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link';
+import { useAllUserProgress } from '@/hooks/useUserProgress'
 
 const applications = [
   {
@@ -29,6 +32,11 @@ const applications = [
 ];
 
 export default function ApplicationPage() {
+  const { isCompleted, loading, error } = useAllUserProgress()
+
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
+
   return (
     <div className="py-8 sm:py-12">
       <div className="text-center mb-12">
@@ -37,7 +45,10 @@ export default function ApplicationPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {applications.map((app) => (
-          <Link key={app.href} href={app.href} className="group block p-6 bg-gray-900/60 rounded-lg border border-gray-800 hover:bg-gray-800/80 hover:border-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/20">
+          <Link key={app.href} href={app.href} className="group block relative p-6 bg-gray-900/60 rounded-lg border border-gray-800 hover:bg-gray-800/80 hover:border-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/20">
+            {isCompleted(app.href) && (
+              <div className="absolute top-4 right-4 w-4 h-4 bg-green-500 rounded-full"></div>
+            )}
             <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">{app.title}</h2>
             <p className="text-gray-400">{app.description}</p>
           </Link>

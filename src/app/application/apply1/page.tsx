@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link';
+import { useAllUserProgress } from '@/hooks/useUserProgress'
 
 const exams = Array.from({ length: 6 }, (_, i) => ({
   href: `/application/apply1/${i + 1}`,
@@ -6,6 +9,11 @@ const exams = Array.from({ length: 6 }, (_, i) => ({
 }));
 
 export default function Apply1Page() {
+  const { isCompleted, loading, error } = useAllUserProgress()
+
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
+
   return (
     <div className="py-8 sm:py-12">
       <div className="max-w-6xl mx-auto">
@@ -18,7 +26,10 @@ export default function Apply1Page() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {exams.map((exam) => (
-            <Link key={exam.href} href={exam.href} className="group flex h-32 items-center justify-center rounded-lg border border-gray-800 bg-gray-900/60 p-6 text-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-gray-700 hover:bg-gray-800/80 hover:shadow-blue-500/20">
+            <Link key={exam.href} href={exam.href} className="group relative flex h-32 items-center justify-center rounded-lg border border-gray-800 bg-gray-900/60 p-6 text-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-gray-700 hover:bg-gray-800/80 hover:shadow-blue-500/20">
+              {isCompleted(exam.href) && (
+                <div className="absolute top-4 right-4 w-4 h-4 bg-green-500 rounded-full"></div>
+              )}
               <h2 className="text-2xl font-semibold text-white transition-colors group-hover:text-blue-400">{exam.title}</h2>
             </Link>
           ))}
