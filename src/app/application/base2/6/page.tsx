@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Link from 'next/link';
+import RecursionVisualizer from '@/components/RecursionVisualizer'
 
 export default function RecursionDocPage() {
   return (
@@ -81,6 +82,12 @@ export default function RecursionDocPage() {
             <li><strong className="text-white">利点:</strong> コードが簡潔で直感的になる場合があります。特に、問題の構造自体が再帰的な場合（例: 木構造の探索）に強力です。</li>
             <li><strong className="text-white">注意点:</strong> 関数呼び出しにはメモリや時間がかかるため、単純な繰り返し処理で書けるものを再帰で書くと、パフォーマンスが低下することがあります。また、ベースケースの設計を誤ると無限再帰に陥る危険があります。</li>
           </ul>
+        </div>
+
+        {/* Recursion Visualization */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6 text-center">再帰の動作確認</h2>
+          <RecursionVisualizer initialValue={4} />
         </div>
 
         {/* Navigation to problem set */}

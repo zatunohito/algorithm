@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Link from 'next/link';
+import AlgorithmVisualizer from '@/components/AlgorithmVisualizer'
 
 export default function SelectionSortDocPage() {
   return (
@@ -84,6 +85,15 @@ export default function SelectionSortDocPage() {
           <p>
             二重ループ構造のため、比較回数は常に一定で、要素数nに対して約n²/2回です。一方、交換回数は外側のループの回数と同じでn-1回となります。バブルソートに比べて要素の交換回数が少ないのが特徴ですが、比較回数が多いため、全体的な計算量は同じオーダーになります。
           </p>
+        </div>
+
+        {/* Algorithm Visualization */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6 text-center">選択ソートの動作確認</h2>
+          <AlgorithmVisualizer 
+            algorithm="selection-sort" 
+            data={[5, 8, 2, 6, 1]} 
+          />
         </div>
 
         {/* Navigation to problem set */}
