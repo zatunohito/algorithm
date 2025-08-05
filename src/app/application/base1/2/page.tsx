@@ -1,55 +1,13 @@
 'use client'
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-)
+import { useUserProgress } from '@/hooks/useUserProgress'
 
 export default function VariablesAndConstantsPage() {
-  const [isCompleted, setIsCompleted] = useState(false)
-  const [user, setUser] = useState<{ id: string } | null>(null)
-  const lessonPath = '/application/base1/2'
+  const { user, isCompleted, loading, error, handleComplete } = useUserProgress('/application/base1/2')
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      
-      if (user) {
-        const { data } = await supabase
-          .from('user_progress')
-          .select('lesson_path')
-          .eq('user_id', user.id)
-          .eq('lesson_path', lessonPath)
-          .single()
-        
-        setIsCompleted(!!data)
-      }
-    }
-    getUser()
-  }, [])
-
-  const handleComplete = async () => {
-    if (!user) return
-    
-    if (isCompleted) {
-      await supabase
-        .from('user_progress')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('lesson_path', lessonPath)
-      setIsCompleted(false)
-    } else {
-      await supabase
-        .from('user_progress')
-        .upsert({ user_id: user.id, lesson_path: lessonPath })
-      setIsCompleted(true)
-    }
-  }
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
 
   return (
     <div className="py-8 sm:py-12">
