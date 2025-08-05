@@ -19,12 +19,12 @@ export default function Footer() {
             </summary>
             <div className="pt-2 text-sm">
               <p>学校、塾、その他教育機関での団体導入をご検討の際は、下記までご連絡ください。</p>
-              <p className="mt-1">Email: <a href="info-b@zatu.tokyo" className="text-blue-400 hover:underline">info-b(to business)</a></p>
+              <p className="mt-1">Email: <a href="mailto:info-b@zatu.tokyo" className="text-blue-400 hover:underline">info-b(to business)</a></p>
               <p className="mt-1">担当者より詳細をご案内させていただきます。</p>
             </div>
           </details>
         </div>
-        <p className="mt-4 text-sm">&copy; 2024 AlGoriss. All rights reserved.</p>
+        <p className="mt-4 text-sm">&copy; 2025 AlGoriss. All rights reserved.</p>
       </div>
     </footer>
   );

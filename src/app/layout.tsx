@@ -15,8 +15,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Algorithm Visualizer",
-  description: "Visualize classic computer science algorithms",
+  title: "AlGoriss",
+  description: "learning platform for information technology",
+  icons: {
+    icon: ['/toplogo.svg'],
+    shortcut: '/toplogo.svg',
+    apple: '/toplogo.svg',
+  },
+  openGraph: {
+    images: ['/toplogo.svg'],
+  },
 };
 
 export default function RootLayout({
