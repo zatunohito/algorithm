@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import Link from 'next/link'
+import PostAssessmentModal from '@/components/PostAssessmentModal'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 )
-import Link from 'next/link'
 
 export default function MyPage() {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
@@ -15,6 +16,8 @@ export default function MyPage() {
   const [isCopied, setIsCopied] = useState(false)
   const [loading, setLoading] = useState(true)
   const [progressData, setProgressData] = useState({ base1: 0, base2: 0, apply1: 0 })
+  const [showPostAssessment, setShowPostAssessment] = useState(false)
+  const [hasShownModal, setHasShownModal] = useState(false)
 
   useEffect(() => {
     const getUser = async () => {
@@ -41,11 +44,29 @@ export default function MyPage() {
     const base2Count = data?.filter(item => item.lesson_path.includes('/base2/')).length || 0
     const apply1Count = data?.filter(item => item.lesson_path.includes('/apply1/')).length || 0
     
-    setProgressData({
+    const newProgressData = {
       base1: Math.round((base1Count / 6) * 100),
       base2: Math.round((base2Count / 6) * 100),
       apply1: Math.round((apply1Count / 6) * 100)
-    })
+    }
+    
+    setProgressData(newProgressData)
+    
+    // Check if user qualifies for post-assessment
+    if (newProgressData.base2 >= 50 && newProgressData.apply1 >= 50) {
+      // Check if user has already completed after assessment
+      const { data: afterAssessment } = await supabase
+        .from('user_assessments')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('assessment_time', 'after')
+        .single()
+      
+      if (!afterAssessment && !hasShownModal) {
+        setShowPostAssessment(true)
+        setHasShownModal(true)
+      }
+    }
   }
 
   const getEncouragementMessage = (count: number) => {
@@ -191,6 +212,11 @@ export default function MyPage() {
           </Link>
         </div>
       </div>
+      
+      <PostAssessmentModal 
+        isOpen={showPostAssessment} 
+        onClose={() => setShowPostAssessment(false)} 
+      />
     </div>
   )
 }
