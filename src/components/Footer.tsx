@@ -24,7 +24,7 @@ export default function Footer() {
             </div>
           </details>
         </div>
-        <p className="mt-4 text-sm">&copy; 2024 AlGoriss. All rights reserved.</p>
+        <p className="mt-4 text-sm">&copy; 2025 AlGoriss. All rights reserved.</p>
       </div>
     </footer>
   );

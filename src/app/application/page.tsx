@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import PostAssessmentModal from '@/components/PostAssessmentModal'
+import { MutatingDots } from 'react-loader-spinner'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -73,7 +74,19 @@ export default function ApplicationPage() {
     }
   }, [loading, router])
 
-  if (loading || assessmentLoading || assessmentCompleted === null) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (loading || assessmentLoading || assessmentCompleted === null) return (
+    <div className="flex justify-center items-center py-16">
+      <MutatingDots
+        visible={true}
+        height="100"
+        width="100"
+        color="#3B82F6"
+        secondaryColor="#1E40AF"
+        radius="12.5"
+        ariaLabel="mutating-dots-loading"
+      />
+    </div>
+  )
   if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
   if (!assessmentCompleted) return null
 
@@ -104,15 +117,6 @@ export default function ApplicationPage() {
                   <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">{app.title}</h2>
                   <p className="text-gray-400">{app.description}</p>
                 </Link>
-              )}
-              {!isBlocked && (
-                <>
-                  {isCompleted(app.href) && (
-                    <div className="absolute top-4 right-4 w-4 h-4 bg-green-500 rounded-full"></div>
-                  )}
-                  <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">{app.title}</h2>
-                  <p className="text-gray-400">{app.description}</p>
-                </>
               )}
             </div>
           ))}
