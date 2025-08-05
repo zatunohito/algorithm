@@ -1,7 +1,14 @@
-/* eslint-disable */
+'use client'
+
 import Link from 'next/link';
+import { useUserProgress } from '@/hooks/useUserProgress'
 
 export default function FunctionPage() {
+  const { user, isCompleted, loading, error, handleComplete } = useUserProgress('/application/base1/6')
+
+  if (loading) return <div className="text-center text-white py-8">読み込み中...</div>
+  if (error) return <div className="text-center text-red-400 py-8">エラー: {error}</div>
+
   return (
     <div className="py-8 sm:py-12">
       <div className="max-w-4xl mx-auto">
@@ -30,14 +37,14 @@ export default function FunctionPage() {
             <h3 className="text-xl font-semibold text-white mt-0 mb-4">コードの例：単純な関数</h3>
             <pre className="bg-gray-900 p-4 rounded-md text-white font-mono text-sm overflow-x-auto">
               <code>
-                // 「あいさつする」という処理を関数として定義<br />
+                {/* 「あいさつする」という処理を関数として定義 */}<br />
                 関数 sayHello()<br />
-                {'  '}出力: "こんにちは！"<br />
+                {'  '}出力: &quot;こんにちは！&quot;<br />
                 終わり<br />
                 <br />
-                // 関数を呼び出す<br />
-                sayHello()  // "こんにちは！" と出力される<br />
-                sayHello()  // もう一度呼び出しても同じ処理が実行される
+                {/* 関数を呼び出す */}<br />
+                sayHello()  {/* &quot;こんにちは！&quot; と出力される */}<br />
+                sayHello()  {/* もう一度呼び出しても同じ処理が実行される */}
               </code>
             </pre>
           </div>
@@ -54,15 +61,15 @@ export default function FunctionPage() {
             <h3 className="text-xl font-semibold text-white mt-0 mb-4">コードの例：引数と戻り値を持つ関数</h3>
             <pre className="bg-gray-900 p-4 rounded-md text-white font-mono text-sm overflow-x-auto">
               <code>
-                // 2つの数値(a, b)を引数として受け取り、合計を戻り値として返す関数<br />
+                {/* 2つの数値(a, b)を引数として受け取り、合計を戻り値として返す関数 */}<br />
                 関数 add(a, b)<br />
                 {'  '}変数 result = a + b<br />
-                {'  '}返す result  // 計算結果を呼び出し元に返す<br />
+                {'  '}返す result  {/* 計算結果を呼び出し元に返す */}<br />
                 終わり<br />
                 <br />
-                // 関数を呼び出し、戻り値を変数sumに保存<br />
+                {/* 関数を呼び出し、戻り値を変数sumに保存 */}<br />
                 変数 sum = add(5, 3)<br />
-                出力: sum  // 8が出力される
+                出力: sum  {/* 8が出力される */}
               </code>
             </pre>
           </div>
@@ -98,9 +105,9 @@ export default function FunctionPage() {
               <code>
                 関数 checkAge(age)<br />
                 {'  '}もし age {'>='} 20 ならば<br />
-                {'    '}返す "成人"<br />
+                {'    '}返す &quot;成人&quot;<br />
                 {'  '}そうでなければ<br />
-                {'    '}返す "未成年"<br />
+                {'    '}返す &quot;未成年&quot;<br />
                 {'  '}終わり<br />
                 終わり<br />
                 <br />
@@ -111,17 +118,30 @@ export default function FunctionPage() {
               <summary className="cursor-pointer text-blue-400 hover:text-blue-300 list-none group-open:text-white">答えを見る</summary>
               <div className="mt-2 pt-4 border-t border-gray-700 text-gray-300">
                 <p><strong className="text-white">答え:</strong> 未成年</p>
-                <p className="mt-2"><strong className="text-white">理由:</strong> `checkAge`関数に`18`が渡されます。if文の条件 `age {'>='} 20` (18は20以上) が偽なので、`そうでなければ` (else) のブロックが実行され、"未成年"という文字列が返されて出力されます。</p>
+                <p className="mt-2"><strong className="text-white">理由:</strong> `checkAge`関数に`18`が渡されます。if文の条件 `age {'>='} 20` (18は20以上) が偽なので、`そうでなければ` (else) のブロックが実行され、&quot;未成年&quot;という文字列が返されて出力されます。</p>
               </div>
             </details>
           </div>
         </div>
 
-        {/* Navigation to next lesson */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center space-y-4">
+          {user && (
+            <button
+              onClick={handleComplete}
+              className={`px-8 py-3 font-semibold rounded-lg transition-colors ${
+                isCompleted 
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+              }`}
+            >
+              {isCompleted ? '✓ 完了済み（クリックで解除）' : 'レッスンを完了する'}
+            </button>
+          )}
+          <div>
             <Link href="/application/base1" className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-0.5">
                 基礎Iを完了する &rarr;
             </Link>
+          </div>
         </div>
       </div>
     </div>
