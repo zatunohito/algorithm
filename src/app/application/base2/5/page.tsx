@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Link from 'next/link';
+import AlgorithmVisualizer from '@/components/AlgorithmVisualizer'
 
 export default function InsertionSortDocPage() {
   return (
@@ -91,6 +92,15 @@ export default function InsertionSortDocPage() {
             <li><strong className="text-white">最良計算時間: O(n)</strong><br />
             データが昇順（ソートしたい順序通り）に並んでいる場合。内側のループは一度も実行されず、外側のループだけで済むため、計算量はnに比例します。</li>
           </ul>
+        </div>
+
+        {/* Algorithm Visualization */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6 text-center">挿入ソートの動作確認</h2>
+          <AlgorithmVisualizer 
+            algorithm="insertion-sort" 
+            data={[5, 2, 4, 6, 1, 3]} 
+          />
         </div>
 
         {/* Navigation to problem set */}

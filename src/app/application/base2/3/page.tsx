@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Link from 'next/link';
+import AlgorithmVisualizer from '@/components/AlgorithmVisualizer'
 
 export default function BubbleSortDocPage() {
   return (
@@ -80,6 +81,15 @@ export default function BubbleSortDocPage() {
           <p>
             これは、二重ループ構造になっているため、比較回数が n の2乗に比例して増加するためです。要素数が多くなると処理時間が急激に長くなるため、実用的な場面で使われることは少ないですが、アルゴリズムの基本を学ぶ上で非常に重要です。
           </p>
+        </div>
+
+        {/* Algorithm Visualization */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6 text-center">バブルソートの動作確認</h2>
+          <AlgorithmVisualizer 
+            algorithm="bubble-sort" 
+            data={[5, 3, 8, 1, 4]} 
+          />
         </div>
 
         {/* Navigation to problem set */}

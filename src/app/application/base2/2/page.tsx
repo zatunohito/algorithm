@@ -1,5 +1,6 @@
 
 import Link from 'next/link';
+import AlgorithmVisualizer from '@/components/AlgorithmVisualizer'
 
 export default function BinarySearchDocPage() {
   return (
@@ -86,6 +87,16 @@ export default function BinarySearchDocPage() {
           <p>
             二分探索は、1回の比較で探索範囲が半分になるため、計算量は<strong className="text-white">O(log n)</strong>（オーダーログエヌ）となります。これは線形探索のO(n)に比べて非常に高速です。例えば、要素数が100万個あっても、たかだか20回程度の比較で結果がわかります。
           </p>
+        </div>
+
+        {/* Algorithm Visualization */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6 text-center">二分探索の動作確認</h2>
+          <AlgorithmVisualizer 
+            algorithm="binary-search" 
+            data={[10, 20, 30, 40, 50, 60, 70]} 
+            target={60} 
+          />
         </div>
 
         {/* Navigation to problem set */}

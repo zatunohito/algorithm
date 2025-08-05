@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import AlgorithmVisualizer from '@/components/AlgorithmVisualizer'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -120,6 +121,16 @@ export default function LinearSearchDocPage() {
           <p>
             線形探索の計算量は、最悪の場合（探す値が配列の末尾にあるか、存在しない場合）、配列の要素数 n に比例します。これを<strong className="text-white">O(n)</strong>（オーダーエヌ）と表記します。
           </p>
+        </div>
+
+        {/* Algorithm Visualization */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6 text-center">線形探索の動作確認</h2>
+          <AlgorithmVisualizer 
+            algorithm="linear-search" 
+            data={[15, 7, 22, 13, 40]} 
+            target={13} 
+          />
         </div>
 
         <div className="mt-12 text-center space-y-4">
