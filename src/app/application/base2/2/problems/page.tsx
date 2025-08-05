@@ -1,7 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 // Documentation Modal Component
 function DocumentationModal({ onClose }: { onClose: () => void }) {
@@ -86,6 +92,46 @@ function DocumentationModal({ onClose }: { onClose: () => void }) {
 // Main Page Component
 export default function BinarySearchProblemsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false)
+  const [user, setUser] = useState<{ id: string } | null>(null)
+  const lessonPath = '/application/base2/2'
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      if (user) {
+        const { data } = await supabase
+          .from('user_progress')
+          .select('lesson_path')
+          .eq('user_id', user.id)
+          .eq('lesson_path', lessonPath)
+          .single()
+        
+        setIsCompleted(!!data)
+      }
+    }
+    getUser()
+  }, [])
+
+  const handleComplete = async () => {
+    if (!user) return
+    
+    if (isCompleted) {
+      await supabase
+        .from('user_progress')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('lesson_path', lessonPath)
+      setIsCompleted(false)
+    } else {
+      await supabase
+        .from('user_progress')
+        .upsert({ user_id: user.id, lesson_path: lessonPath })
+      setIsCompleted(true)
+    }
+  }
 
   return (
     <div className="py-8 sm:py-12">
@@ -147,11 +193,24 @@ export default function BinarySearchProblemsPage() {
             </details>
           </div>
 
-          {/* Navigation to next lesson */}
-          <div className="mt-12 text-center">
+          <div className="mt-12 text-center space-y-4">
+            {user && (
+              <button
+                onClick={handleComplete}
+                className={`px-8 py-3 font-semibold rounded-lg transition-colors ${
+                  isCompleted 
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+                }`}
+              >
+                {isCompleted ? '✓ 完了済み（クリックで解除）' : 'レッスンを完了する'}
+              </button>
+            )}
+            <div>
               <Link href="/application/base2/3" className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-blue-500/30 transform hover:-translate-y-0.5">
                   次のレッスンへ：バブルソート &rarr;
               </Link>
+            </div>
           </div>
         </div>
 

@@ -1,6 +1,14 @@
 /* eslint-disable */
+'use client'
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 const lessons = [
   {
@@ -36,6 +44,32 @@ const lessons = [
 ];
 
 export default function Base2Page() {
+  const [completedLessons, setCompletedLessons] = useState<string[]>([])
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      if (user) {
+        const { data } = await supabase
+          .from('user_progress')
+          .select('lesson_path')
+          .eq('user_id', user.id)
+        
+        if (data) {
+          setCompletedLessons(data.map(item => item.lesson_path))
+        }
+      }
+    }
+    getUser()
+  }, [])
+
+  const isCompleted = (lessonPath: string) => {
+    return completedLessons.includes(lessonPath)
+  }
+
   return (
     <div className="py-8 sm:py-12">
       <div className="max-w-6xl mx-auto">
@@ -49,7 +83,10 @@ export default function Base2Page() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson) => (
-            <Link key={lesson.href} href={lesson.href} className="group block p-6 bg-gray-900/60 rounded-lg border border-gray-800 hover:bg-gray-800/80 hover:border-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/20">
+            <Link key={lesson.href} href={lesson.href} className="group block relative p-6 bg-gray-900/60 rounded-lg border border-gray-800 hover:bg-gray-800/80 hover:border-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/20">
+              {isCompleted(lesson.href) && (
+                <div className="absolute top-4 right-4 w-4 h-4 bg-green-500 rounded-full"></div>
+              )}
               <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">{lesson.title}</h2>
               <p className="text-gray-400">{lesson.description}</p>
             </Link>

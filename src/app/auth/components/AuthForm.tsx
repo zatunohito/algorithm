@@ -2,6 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 interface AuthFormProps {
   type: 'login' | 'signup'
@@ -10,10 +17,36 @@ interface AuthFormProps {
 export default function AuthForm({ type }: AuthFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(type, { email, password })
+    setLoading(true)
+    setError('')
+
+    try {
+      if (type === 'signup') {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        })
+        if (error) throw error
+        alert('確認メールを送信しました！')
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        if (error) throw error
+        router.push('/')
+      }
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'エラーが発生しました')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -26,6 +59,9 @@ export default function AuthForm({ type }: AuthFormProps) {
             {type === 'login' ? 'ログイン' : 'アカウント作成'}
           </h2>
         </div>
+        {error && (
+          <div className="text-red-400 text-center text-sm">{error}</div>
+        )}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <input
@@ -48,9 +84,10 @@ export default function AuthForm({ type }: AuthFormProps) {
 
           <button
             type="submit"
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={loading}
+            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-medium rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {type === 'login' ? 'ログイン' : 'アカウント作成'}
+            {loading ? '処理中...' : (type === 'login' ? 'ログイン' : 'アカウント作成')}
           </button>
 
           <div className="text-center">

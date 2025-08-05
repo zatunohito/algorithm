@@ -1,8 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QuestionCard } from '../components/QuestionCard';
 import { QuestionCardProps } from '../components/QuestionCard';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 // 第1問 配列と探索アルゴリズム (25点)
 const question1_1: QuestionCardProps = {
@@ -215,9 +221,48 @@ const question2_2: QuestionCardProps = {
 };
 
 export default function MockExam1() {
-  // 各問題の選択状態・提出状態をuseStateで管理
   const [selectedAnswers, setSelectedAnswers] = useState<(number | null)[]>([null, null, null, null, null]);
   const [isSubmitted, setIsSubmitted] = useState<boolean[]>([false, false, false, false, false]);
+  const [isCompleted, setIsCompleted] = useState(false)
+  const [user, setUser] = useState<{ id: string } | null>(null)
+  const lessonPath = '/application/apply1/1'
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      if (user) {
+        const { data } = await supabase
+          .from('user_progress')
+          .select('lesson_path')
+          .eq('user_id', user.id)
+          .eq('lesson_path', lessonPath)
+          .single()
+        
+        setIsCompleted(!!data)
+      }
+    }
+    getUser()
+  }, [])
+
+  const handleComplete = async () => {
+    if (!user) return
+    
+    if (isCompleted) {
+      await supabase
+        .from('user_progress')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('lesson_path', lessonPath)
+      setIsCompleted(false)
+    } else {
+      await supabase
+        .from('user_progress')
+        .upsert({ user_id: user.id, lesson_path: lessonPath })
+      setIsCompleted(true)
+    }
+  }
 
   // 問題データ配列
   const questions: QuestionCardProps[] = [
@@ -299,6 +344,21 @@ export default function MockExam1() {
           </div>
         ))}
       </section>
+      
+      {user && (
+        <div className="text-center mt-12">
+          <button
+            onClick={handleComplete}
+            className={`px-8 py-3 font-semibold rounded-lg transition-colors ${
+              isCompleted 
+                ? 'bg-green-600 hover:bg-green-700 text-white' 
+                : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+            }`}
+          >
+            {isCompleted ? '✓ 完了済み（クリックで解除）' : '模擬試験を完了する'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,13 @@
+'use client'
+
 import Link from 'next/link';
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 const applications = [
   {
@@ -29,6 +38,32 @@ const applications = [
 ];
 
 export default function ApplicationPage() {
+  const [completedLessons, setCompletedLessons] = useState<string[]>([])
+  const [user, setUser] = useState<{ id: string } | null>(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      if (user) {
+        const { data } = await supabase
+          .from('user_progress')
+          .select('lesson_path')
+          .eq('user_id', user.id)
+        
+        if (data) {
+          setCompletedLessons(data.map(item => item.lesson_path))
+        }
+      }
+    }
+    getUser()
+  }, [])
+
+  const isCompleted = (lessonPath: string) => {
+    return completedLessons.includes(lessonPath)
+  }
+
   return (
     <div className="py-8 sm:py-12">
       <div className="text-center mb-12">
@@ -37,7 +72,10 @@ export default function ApplicationPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {applications.map((app) => (
-          <Link key={app.href} href={app.href} className="group block p-6 bg-gray-900/60 rounded-lg border border-gray-800 hover:bg-gray-800/80 hover:border-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/20">
+          <Link key={app.href} href={app.href} className="group block relative p-6 bg-gray-900/60 rounded-lg border border-gray-800 hover:bg-gray-800/80 hover:border-gray-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-blue-500/20">
+            {isCompleted(app.href) && (
+              <div className="absolute top-4 right-4 w-4 h-4 bg-green-500 rounded-full"></div>
+            )}
             <h2 className="text-xl font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">{app.title}</h2>
             <p className="text-gray-400">{app.description}</p>
           </Link>
