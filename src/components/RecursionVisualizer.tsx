@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface RecursionVisualizerProps {
   initialValue: number
@@ -101,7 +101,7 @@ export default function RecursionVisualizer({ initialValue }: RecursionVisualize
               開始ボタンを押して再帰の動作を確認してください
             </div>
           )}
-          {callStack.map((call, index) => (
+          {callStack.map((call) => (
             <div
               key={call.id}
               className={`p-3 rounded transition-all duration-300 ${getStatusColor(call.status)} text-white`}

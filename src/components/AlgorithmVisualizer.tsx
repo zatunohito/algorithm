@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface VisualizerProps {
   algorithm: 'linear-search' | 'binary-search' | 'bubble-sort' | 'selection-sort' | 'insertion-sort'
@@ -15,7 +15,7 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
   const [currentIndex, setCurrentIndex] = useState(-1)
   const [compareIndex, setCompareIndex] = useState(-1)
   const [isRunning, setIsRunning] = useState(false)
-  const [step, setStep] = useState(0)
+
   const [found, setFound] = useState(false)
   const [speed, setSpeed] = useState(500)
   const [barCount, setBarCount] = useState(data.length)
@@ -32,7 +32,7 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
     setCurrentData([...originalData])
     setCurrentIndex(-1)
     setCompareIndex(-1)
-    setStep(0)
+
     setFound(false)
     setIsRunning(false)
     setOperationCount(0)
@@ -43,7 +43,7 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
   }
 
   const generateRandomData = (count: number) => {
-    let newData = Array.from({ length: count }, () => Math.floor(Math.random() * 90) + 10)
+    const newData = Array.from({ length: count }, () => Math.floor(Math.random() * 90) + 10)
     if (algorithm === 'binary-search') {
       newData.sort((a, b) => a - b)
     }
@@ -62,7 +62,7 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
     const numValue = parseInt(value)
     if (isNaN(numValue) || numValue < 1 || numValue > 100) return
     
-    let newData = [...originalData]
+    const newData = [...originalData]
     newData[index] = numValue
     
     if (algorithm === 'binary-search') {
