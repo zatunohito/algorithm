@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js'
+import ReviewCompleteButton from '@/components/ReviewCompleteButton'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -200,6 +201,7 @@ export default function LinearSearchProblemsPage() {
       </div>
 
       {isModalOpen && <DocumentationModal onClose={() => setIsModalOpen(false)} />}
+      <ReviewCompleteButton lessonPath={lessonPath} />
     </div>
   );
 }

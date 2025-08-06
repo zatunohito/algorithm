@@ -18,6 +18,8 @@ export default function MyPage() {
   const [progressData, setProgressData] = useState({ base1: 0, base2: 0, apply1: 0 })
   const [showPostAssessment, setShowPostAssessment] = useState(false)
   const [hasShownModal, setHasShownModal] = useState(false)
+  const [reviewTasks, setReviewTasks] = useState<Array<{lesson_path: string, completed_at: string, reviewType: string}>>([])
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -34,7 +36,7 @@ export default function MyPage() {
   const getCompletedCount = async (userId: string) => {
     const { data } = await supabase
       .from('user_progress')
-      .select('lesson_path')
+      .select('lesson_path, completed_at, review_3_days, review_7_days, review_30_days')
       .eq('user_id', userId)
     
     setCompletedCount(data?.length || 0)
@@ -51,6 +53,33 @@ export default function MyPage() {
     }
     
     setProgressData(newProgressData)
+    
+    // Calculate review tasks
+    if (data) {
+      const now = new Date()
+      const reviewTasks = data.filter(item => {
+        const completedAt = new Date(item.completed_at)
+        const daysDiff = Math.floor((now.getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24))
+        
+        // Check if review is needed and not yet completed
+        if (daysDiff >= 3 && !item.review_3_days) return true
+        if (daysDiff >= 7 && !item.review_7_days) return true
+        if (daysDiff >= 30 && !item.review_30_days) return true
+        
+        return false
+      }).map(item => {
+        const completedAt = new Date(item.completed_at)
+        const daysDiff = Math.floor((now.getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24))
+        
+        let reviewType = ''
+        if (daysDiff >= 30 && !item.review_30_days) reviewType = '30_days'
+        else if (daysDiff >= 7 && !item.review_7_days) reviewType = '7_days'
+        else if (daysDiff >= 3 && !item.review_3_days) reviewType = '3_days'
+        
+        return { ...item, reviewType }
+      })
+      setReviewTasks(reviewTasks)
+    }
     
     // Check if user qualifies for post-assessment
     if (newProgressData.base2 >= 50 && newProgressData.apply1 >= 50) {
@@ -110,6 +139,49 @@ export default function MyPage() {
         </div>
 
         <div className="space-y-6">
+          {/* Review Tasks */}
+          {reviewTasks.length > 0 && (
+            <div className="bg-yellow-900/30 rounded-lg border border-yellow-700 p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">📝 復習タスク</h2>
+              <div className="space-y-3">
+                {reviewTasks.map((task, index) => {
+                  const completedAt = new Date(task.completed_at)
+                  const reviewTypeText = task.reviewType === '3_days' ? '3日後復習' : 
+                                        task.reviewType === '7_days' ? '1週間後復習' : '1ヶ月後復習'
+                  const lessonName = task.lesson_path.split('/').pop()
+                  
+                  const handleReviewComplete = async () => {
+                    const updateField = task.reviewType === '3_days' ? 'review_3_days' :
+                                       task.reviewType === '7_days' ? 'review_7_days' : 'review_30_days'
+                    
+                    await supabase
+                      .from('user_progress')
+                      .update({ [updateField]: new Date().toISOString() })
+                      .eq('user_id', user?.id)
+                      .eq('lesson_path', task.lesson_path)
+                    
+                    if (user) await getCompletedCount(user.id)
+                  }
+                  
+                  return (
+                    <div key={index} className="flex items-center justify-between p-3 bg-yellow-800/20 rounded-lg">
+                      <div>
+                        <p className="text-white font-medium">{lessonName}</p>
+                        <p className="text-yellow-300 text-sm">{reviewTypeText} - 完了日: {completedAt.toLocaleDateString('ja-JP')}</p>
+                      </div>
+                      <Link
+                        href={`${task.lesson_path}?review=${task.reviewType}`}
+                        className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded-lg transition-colors"
+                      >
+                        復習する
+                      </Link>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Progress Overview */}
           <div className="bg-gray-900/60 rounded-lg border border-gray-800 p-6">
             <h2 className="text-xl font-semibold text-white mb-4">学習進捗</h2>
