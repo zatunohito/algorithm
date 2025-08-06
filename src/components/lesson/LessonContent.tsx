@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 'use client'
 
 // NOTE: This component is currently specific to the "Linear Search" lesson.

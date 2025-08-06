@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 'use client';
 
 import ProblemPageLayout from '@/components/lesson/ProblemPageLayout';

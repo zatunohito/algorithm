@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { useRouter } from 'next/navigation'
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -42,7 +42,7 @@ export default function AfterAssessmentPage() {
   })
   const [form10Comment, setForm10Comment] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  
 
   const handleScoreChange = (formIndex: number, score: number) => {
     setScores(prev => ({ ...prev, [`form${formIndex}`]: score }))

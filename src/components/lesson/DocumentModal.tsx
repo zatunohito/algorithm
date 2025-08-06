@@ -6,9 +6,10 @@ import LessonContent from './LessonContent';
 interface DocumentModalProps {
   onClose: () => void;
   title: string;
+  children: React.ReactNode;
 }
 
-export default function DocumentModal({ onClose, title }: DocumentModalProps) {
+export default function DocumentModal({ onClose, title, children }: DocumentModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4">
       <div className="bg-gray-900 p-6 sm:p-8 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative border border-gray-700 shadow-2xl shadow-blue-500/20">

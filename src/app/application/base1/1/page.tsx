@@ -4,7 +4,7 @@ import { useUserProgress } from '@/hooks/useUserProgress'
 import LessonLayout from '@/components/lesson/LessonLayout'
 import LessonActions from '@/components/lesson/LessonActions'
 import LoadingError from '@/components/lesson/LoadingError'
-import CodeExample from '@/components/lesson/CodeExample'
+
 import SectionHeader from '@/components/lesson/SectionHeader'
 
 export default function StartEndPage() {

@@ -22,6 +22,7 @@ interface ProblemPageLayoutProps {
   nextLessonLink: string;
   nextLessonTitle: string;
   children: React.ReactNode;
+  lessonContent: React.ReactNode;
 }
 
 export default function ProblemPageLayout({
@@ -34,6 +35,7 @@ export default function ProblemPageLayout({
   nextLessonLink,
   nextLessonTitle,
   children,
+  lessonContent,
 }: ProblemPageLayoutProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);

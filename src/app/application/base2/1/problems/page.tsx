@@ -2,6 +2,7 @@
 'use client';
 
 import ProblemPageLayout from '@/components/lesson/ProblemPageLayout';
+import LessonContent from '@/components/lesson/LessonContent';
 
 export default function LinearSearchProblemsPage() {
   const lessonPath = '/application/base2/1';
@@ -16,6 +17,7 @@ export default function LinearSearchProblemsPage() {
       lessonPath={lessonPath}
       nextLessonLink="/application/base2/2"
       nextLessonTitle="二分探索"
+      lessonContent={<LessonContent />}
     >
       {/* Problem 1 */}
       <div className="p-6 bg-gray-900/60 rounded-lg border border-gray-800">
