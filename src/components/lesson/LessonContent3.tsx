@@ -1,0 +1,71 @@
+/* eslint-disable */
+'use client'
+
+export default function LessonContent3() {
+  return (
+    <>
+      <p>
+        バブルソートは、<strong className="text-white">隣り合う要素の大小を比較しながら交換を繰り返す</strong>ことで、データを昇順または降順に整列（ソート）するアルゴリズムです。
+      </p>
+      <p>
+        アルゴリズムがシンプルで理解しやすいため、ソートの学習の第一歩としてよく用いられます。名前の由来は、最も大きい（または小さい）要素が、泡（バブル）が水面に上がっていくように配列の端に移動していく様子から来ています。
+      </p>
+
+      <h2 className="text-2xl font-semibold text-white pt-6 border-t border-gray-800">アルゴリズムの流れ</h2>
+      <p>
+        配列`data`を昇順にソートする例を考えます。
+      </p>
+      <div className="my-4 p-6 bg-gray-900/60 rounded-lg border border-gray-800">
+        <h3 className="text-xl font-semibold text-white mt-0 mb-4">共通テスト用プログラム表記（擬似コード）</h3>
+        <pre className="bg-gray-900 p-4 rounded-md text-white font-mono text-sm overflow-x-auto">
+          <code>
+            関数 bubbleSort(data)<br />
+            {'  '}変数 n = dataの要素数<br />
+            {'  '}// パス（走査）の繰り返し<br />
+            {'  '}i を 0 から n - 2 まで 1 ずつ増やしながら繰り返す<br />
+            {'    '}// 隣り合う要素の比較と交換<br />
+            {'    '}j を 0 から n - i - 2 まで 1 ずつ増やしながら繰り返す<br />
+            {'      '}もし data[j] が data[j+1] より大きい ならば<br />
+            {'        '}data[j] と data[j+1] を交換する<br />
+            {'      '}終わり<br />
+            {'    '}終わり<br />
+            {'  '}終わり<br />
+            {'  '}返す data<br />
+            終わり
+          </code>
+        </pre>
+        <p className="mt-4">
+          このコードは二重ループになっています。外側のループは、配列全体を何回走査するか（パス）を制御します。内側のループは、隣り合う要素を比較し、必要であれば交換します。1回のパスが終わるごとに、最も大きい要素が配列の右端に確定していきます。
+        </p>
+      </div>
+
+      <h2 className="text-2xl font-semibold text-white pt-6 border-t border-gray-800">フローチャートの考え方</h2>
+      <p>
+        バブルソートの考え方をフローチャートで表すと、以下のようになります。
+      </p>
+      <div className="my-4 p-6 bg-gray-900/60 rounded-lg border border-gray-800">
+        <ol className="list-decimal list-inside space-y-2">
+          <li>ソートを開始する。</li>
+          <li>外側のループ（パス）を開始する。このループは配列の要素数-1回繰り返される。</li>
+          <li>内側のループを開始する。配列の先頭から、まだソートが確定していない部分の末尾までを走査する。
+            <ul className="list-disc pl-8 mt-2 space-y-2">
+              <li>隣り合う2つの要素（`data[j]`と`data[j+1]`）を比較する。</li>
+              <li>もし`data[j]`の方が大きければ、2つの要素を交換する。</li>
+            </ul>
+          </li>
+          <li>内側のループが終了したら、1つのパスが完了。最も大きい要素が未整列部分の右端に移動する。</li>
+          <li>外側のループが終了するまで、ステップ3と4を繰り返す。</li>
+          <li>ソートが完了した配列を返す。</li>
+        </ol>
+      </div>
+
+      <h2 className="text-2xl font-semibold text-white pt-6 border-t border-gray-800">計算量</h2>
+      <p>
+        バブルソートの計算量は、配列の要素数を n とすると、最悪の場合も平均的な場合も <strong className="text-white">O(n²)</strong>（オーダーエヌ二乗）となります。
+      </p>
+      <p>
+        これは、二重ループ構造になっているため、比較回数が n の2乗に比例して増加するためです。要素数が多くなると処理時間が急激に長くなるため、実用的な場面で使われることは少ないですが、アルゴリズムの基本を学ぶ上で非常に重要です。
+      </p>
+    </>
+  );
+}

@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import PostAssessmentModal from '@/components/PostAssessmentModal'
@@ -22,6 +22,71 @@ export default function MyPage() {
 
 
   useEffect(() => {
+    const getCompletedCount = async (userId: string) => {
+      const { data } = await supabase
+        .from('user_progress')
+        .select('lesson_path, completed_at, review_3_days, review_7_days, review_30_days')
+        .eq('user_id', userId)
+      
+      setCompletedCount(data?.length || 0)
+      
+      // Calculate progress by category
+      const base1Count = data?.filter(item => item.lesson_path.includes('/base1/')).length || 0
+      const base2Count = data?.filter(item => item.lesson_path.includes('/base2/')).length || 0
+      const apply1Count = data?.filter(item => item.lesson_path.includes('/apply1/')).length || 0
+      
+      const newProgressData = {
+        base1: Math.round((base1Count / 6) * 100),
+        base2: Math.round((base2Count / 6) * 100),
+        apply1: Math.round((apply1Count / 6) * 100)
+      }
+      
+      setProgressData(newProgressData)
+      
+      // Calculate review tasks
+      if (data) {
+        const now = new Date()
+        const reviewTasks = data.filter(item => {
+          const completedAt = new Date(item.completed_at)
+          const daysDiff = Math.floor((now.getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24))
+          
+          // Check if review is needed and not yet completed
+          if (daysDiff >= 3 && !item.review_3_days) return true
+          if (daysDiff >= 7 && !item.review_7_days) return true
+          if (daysDiff >= 30 && !item.review_30_days) return true
+          
+          return false
+        }).map(item => {
+          const completedAt = new Date(item.completed_at)
+          const daysDiff = Math.floor((now.getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24))
+          
+          let reviewType = ''
+          if (daysDiff >= 30 && !item.review_30_days) reviewType = '30_days'
+          else if (daysDiff >= 7 && !item.review_7_days) reviewType = '7_days'
+          else if (daysDiff >= 3 && !item.review_3_days) reviewType = '3_days'
+          
+          return { ...item, reviewType }
+        })
+        setReviewTasks(reviewTasks)
+      }
+      
+      // Check if user qualifies for post-assessment
+      if (newProgressData.base2 >= 50 && newProgressData.apply1 >= 50) {
+        // Check if user has already completed after assessment
+        const { data: afterAssessment } = await supabase
+          .from('user_assessments')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('assessment_time', 'after')
+          .single()
+        
+        if (!afterAssessment && !hasShownModal) {
+          setShowPostAssessment(true)
+          setHasShownModal(true)
+        }
+      }
+    }
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
@@ -31,72 +96,7 @@ export default function MyPage() {
       setLoading(false)
     }
     getUser()
-  }, [])
-
-  const getCompletedCount = async (userId: string) => {
-    const { data } = await supabase
-      .from('user_progress')
-      .select('lesson_path, completed_at, review_3_days, review_7_days, review_30_days')
-      .eq('user_id', userId)
-    
-    setCompletedCount(data?.length || 0)
-    
-    // Calculate progress by category
-    const base1Count = data?.filter(item => item.lesson_path.includes('/base1/')).length || 0
-    const base2Count = data?.filter(item => item.lesson_path.includes('/base2/')).length || 0
-    const apply1Count = data?.filter(item => item.lesson_path.includes('/apply1/')).length || 0
-    
-    const newProgressData = {
-      base1: Math.round((base1Count / 6) * 100),
-      base2: Math.round((base2Count / 6) * 100),
-      apply1: Math.round((apply1Count / 6) * 100)
-    }
-    
-    setProgressData(newProgressData)
-    
-    // Calculate review tasks
-    if (data) {
-      const now = new Date()
-      const reviewTasks = data.filter(item => {
-        const completedAt = new Date(item.completed_at)
-        const daysDiff = Math.floor((now.getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24))
-        
-        // Check if review is needed and not yet completed
-        if (daysDiff >= 3 && !item.review_3_days) return true
-        if (daysDiff >= 7 && !item.review_7_days) return true
-        if (daysDiff >= 30 && !item.review_30_days) return true
-        
-        return false
-      }).map(item => {
-        const completedAt = new Date(item.completed_at)
-        const daysDiff = Math.floor((now.getTime() - completedAt.getTime()) / (1000 * 60 * 60 * 24))
-        
-        let reviewType = ''
-        if (daysDiff >= 30 && !item.review_30_days) reviewType = '30_days'
-        else if (daysDiff >= 7 && !item.review_7_days) reviewType = '7_days'
-        else if (daysDiff >= 3 && !item.review_3_days) reviewType = '3_days'
-        
-        return { ...item, reviewType }
-      })
-      setReviewTasks(reviewTasks)
-    }
-    
-    // Check if user qualifies for post-assessment
-    if (newProgressData.base2 >= 50 && newProgressData.apply1 >= 50) {
-      // Check if user has already completed after assessment
-      const { data: afterAssessment } = await supabase
-        .from('user_assessments')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('assessment_time', 'after')
-        .single()
-      
-      if (!afterAssessment && !hasShownModal) {
-        setShowPostAssessment(true)
-        setHasShownModal(true)
-      }
-    }
-  }
+  }, [hasShownModal])
 
   const getEncouragementMessage = (count: number) => {
     if (count === 0) return '学習を始めましょう！最初の一歩が大切です。'
@@ -149,19 +149,6 @@ export default function MyPage() {
                   const reviewTypeText = task.reviewType === '3_days' ? '3日後復習' : 
                                         task.reviewType === '7_days' ? '1週間後復習' : '1ヶ月後復習'
                   const lessonName = task.lesson_path.split('/').pop()
-                  
-                  const handleReviewComplete = async () => {
-                    const updateField = task.reviewType === '3_days' ? 'review_3_days' :
-                                       task.reviewType === '7_days' ? 'review_7_days' : 'review_30_days'
-                    
-                    await supabase
-                      .from('user_progress')
-                      .update({ [updateField]: new Date().toISOString() })
-                      .eq('user_id', user?.id)
-                      .eq('lesson_path', task.lesson_path)
-                    
-                    if (user) await getCompletedCount(user.id)
-                  }
                   
                   return (
                     <div key={index} className="flex items-center justify-between p-3 bg-yellow-800/20 rounded-lg">
