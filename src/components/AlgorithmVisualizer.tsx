@@ -24,15 +24,22 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
   const [operationCount, setOperationCount] = useState(0)
   const [comparisonCount, setComparisonCount] = useState(0)
   const [swapCount, setSwapCount] = useState(0)
+  /** 選択された探索値 */
   const [selectedTarget, setSelectedTarget] = useState(target || initialData[0])
+  /** 探索経路（インデックスの配列） */
   const [searchPath, setSearchPath] = useState<number[]>([])
+  /** 二分探索の範囲 */
   const [binarySearchRange, setBinarySearchRange] = useState<{left: number, right: number} | null>(null)
+  /** ターゲット値が存在しない場合の警告表示 */
+  const [targetNotFound, setTargetNotFound] = useState(false)
 
+  /**
+   * 状態をリセットして初期状態に戻す
+   */
   const reset = () => {
     setCurrentData([...originalData])
     setCurrentIndex(-1)
     setCompareIndex(-1)
-
     setFound(false)
     setIsRunning(false)
     setOperationCount(0)
@@ -40,6 +47,7 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
     setSwapCount(0)
     setSearchPath([])
     setBinarySearchRange(null)
+    setTargetNotFound(false)
   }
 
   const generateRandomData = (count: number) => {
@@ -106,13 +114,17 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
     setIsRunning(false)
   }
 
+  /**
+   * 二分探索アルゴリズムの実行
+   * ソート済み配列から目標値を効率的に探索
+   */
   const binarySearch = async () => {
     if (!selectedTarget) return
     
     // 探索値が存在するかチェック
     if (!originalData.includes(selectedTarget)) {
-      const randomValue = originalData[Math.floor(Math.random() * originalData.length)]
-      setSelectedTarget(randomValue)
+      setTargetNotFound(true)
+      setTimeout(() => setTargetNotFound(false), 3000)
       return
     }
     
@@ -428,6 +440,12 @@ export default function AlgorithmVisualizer({ algorithm, data, target }: Visuali
       {found && (
         <div className="mt-4 p-2 bg-green-900/50 border border-green-700 rounded text-green-300 text-center">
           値 {selectedTarget} が見つかりました！
+        </div>
+      )}
+
+      {targetNotFound && (
+        <div className="mt-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-300 text-center">
+          ⚠️ 探索値 {selectedTarget} はデータに存在しません。ドロップダウンから存在する値を選択してください。
         </div>
       )}
 
