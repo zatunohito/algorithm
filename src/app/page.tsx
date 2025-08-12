@@ -10,7 +10,7 @@ export default function Home() {
         情報 I に万全な対策を
         <br />
       </p>
-      <p className="mt-8 text-left leading-relaxed">
+      <div className="mt-8 text-left leading-relaxed">
         <span className="font-bold">ここは仮です。Beta版としてデプロイするときは内容を大きく変更します。</span>
         大学入学共通テストで2025年度から導入された新科目「情報Ⅰ」は、大問4つ（合計100点）で構成され、そのうち第3問（25点）がプログラミング・アルゴリズム分野にあたります。
         <br />
@@ -81,7 +81,7 @@ export default function Home() {
           </li>
         </ul>
       </div>
-      </p>
+      </div>
       
     </div>
   );

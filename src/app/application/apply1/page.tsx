@@ -3,10 +3,20 @@
 import Link from 'next/link';
 import { useAllUserProgress } from '@/hooks/useUserProgress'
 
-const exams = Array.from({ length: 6 }, (_, i) => ({
-  href: `/application/apply1/${i + 1}`,
-  title: `模擬試験 ${i + 1}`,
-}));
+const exams = [
+  ...Array.from({ length: 6 }, (_, i) => ({
+    href: `/application/apply1/${i + 1}`,
+    title: `模擬試験 ${i + 1}`,
+  })),
+  {
+    href: `/application/apply1/mock-exam-5`,
+    title: `Apply1 模擬試験 (5問)`,
+  },
+  {
+    href: `/application/apply1/mock-exam-10`,
+    title: `Apply1 模擬試験 (10問)`,
+  },
+];
 
 export default function Apply1Page() {
   const { isCompleted, loading, error } = useAllUserProgress()
